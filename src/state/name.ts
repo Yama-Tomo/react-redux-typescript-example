@@ -1,12 +1,19 @@
 import { createSlice, PayloadAction } from 'redux-starter-kit';
 import { RootState } from './store';
 
+export interface State {
+  name: string;
+  email: string;
+}
+
+const initialState: State = {
+  name: '',
+  email: ''
+};
+
 const slice = createSlice({
   slice: 'name',
-  initialState: {
-    name: '',
-    email: ''
-  },
+  initialState,
   reducers: {
     updateName: (state, action: PayloadAction<string>) => { state.name = action.payload },
     updateEmail: (state, action: PayloadAction<string>) => { state.email = action.payload },
