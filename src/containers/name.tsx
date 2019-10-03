@@ -5,7 +5,7 @@ import { actions, selectors } from '../state/name';
 import { createRenderFunction } from './factory';
 import Component, { Props as InnerProps } from '../components/name';
 
-const usePrepareProps = () => {
+const usePrepareInnerProps = (): InnerProps => {
   const rootState = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
@@ -26,7 +26,7 @@ export interface Props {
 }
 
 export default (props: Props) => {
-  const innerProps = usePrepareProps();
+  const innerProps = usePrepareInnerProps();
 
   return createRenderFunction(Component, props.render)(innerProps);
 };

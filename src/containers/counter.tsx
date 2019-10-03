@@ -5,7 +5,7 @@ import { actions } from '../state/counter';
 import { createRenderFunction } from './factory';
 import Component, { Props as InnerProps } from '../components/counter';
 
-const usePrepareProps = () => {
+const usePrepareInnerProps = (): InnerProps => {
   const rootState = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
 
@@ -25,7 +25,7 @@ export interface Props {
 }
 
 export default (props: Props) => {
-  const innerProps = usePrepareProps();
+  const innerProps = usePrepareInnerProps();
 
   return createRenderFunction(Component, props.render)(innerProps);
 };
