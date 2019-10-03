@@ -2,7 +2,7 @@ import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '../state/store';
 import { actions } from '../state/counter';
-import { createRenderFunction } from './factory';
+import { createRenderFunction } from './utils';
 import Component, { Props as InnerProps } from '../components/counter';
 
 const usePrepareInnerProps = (): InnerProps => {
