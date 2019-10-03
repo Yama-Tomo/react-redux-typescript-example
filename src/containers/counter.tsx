@@ -1,20 +1,32 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '../state/store';
 import { actions } from '../state/counter';
-import { containerFactory } from './factory';
-import Component from '../components/counter';
+import { createRenderFunction } from './factory';
+import Component, { Props as InnerProps } from '../components/counter';
 
 const usePrepareProps = () => {
-  const currentValue = useSelector((state: RootState) => state.counter);
-
+  const rootState = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
-  const increment = useCallback(() => dispatch(actions.increment()), [dispatch]);
-  const decrement = useCallback(() => dispatch(actions.decrement()), [dispatch]);
 
-  return { currentValue, increment, decrement };
+  return {
+    data: {
+      currentVal: rootState.counter
+    },
+    handlers: {
+      onIncrementClicked: useCallback(() => dispatch(actions.increment()), [dispatch]),
+      onDecrementClicked: useCallback(() => dispatch(actions.decrement()), [dispatch]),
+    }
+  };
 };
 
-export type Props = ReturnType<typeof usePrepareProps>;
+export interface Props {
+  render?: React.FC<InnerProps>
+}
 
-export default containerFactory(Component, usePrepareProps);
+export default (props: Props) => {
+  const innerProps = usePrepareProps();
+
+  return createRenderFunction(Component, props.render)(innerProps);
+};
+

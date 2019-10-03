@@ -1,22 +1,33 @@
 import * as React from 'react';
-import { Props } from '../containers/name';
 import { Input } from './generics/input';
+
+export interface Props {
+  data: {
+    info: string;
+    name: string;
+    email: string;
+  },
+  handlers: {
+    onNameChanged: (v: string) => void;
+    onEmailChanged: (v: string) => void;
+  }
+}
 
 export default (props: Props) => {
   return (
     <>
-      <p>{props.nameAndEmail}</p>
+      <p>{props.data.info}</p>
       <Input
         type="text"
         placeholder="name"
-        value={props.name.name}
-        onChange={(e) => props.updateName(e.target.value)}
+        value={props.data.name}
+        onChange={(e) => props.handlers.onNameChanged(e.target.value)}
       />
       <Input
         type="text"
         placeholder="email"
-        value={props.name.email}
-        onChange={(e) => props.updateEmail(e.target.value)}
+        value={props.data.email}
+        onChange={(e) => props.handlers.onEmailChanged(e.target.value)}
       />
     </>
   );

@@ -1,21 +1,33 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '../state/store';
 import { actions, selectors } from '../state/name';
-import { containerFactory } from './factory';
-import Component from '../components/name';
+import { createRenderFunction } from './factory';
+import Component, { Props as InnerProps } from '../components/name';
 
 const usePrepareProps = () => {
-  const name = useSelector((state: RootState) => state.name);
-  const nameAndEmail = useSelector((state: RootState) => selectors.nameAndEmail(state));
-
+  const rootState = useSelector((state: RootState) => state);
   const dispatch = useDispatch();
-  const updateName = useCallback((v: string) => dispatch(actions.updateName(v)), [dispatch]);
-  const updateEmail = useCallback((v: string) => dispatch(actions.updateEmail(v)), [dispatch]);
 
-  return { name, updateName, updateEmail, nameAndEmail };
+  return {
+    data: {
+      info: selectors.nameAndEmail(rootState),
+      ...rootState.name,
+    },
+    handlers: {
+      onNameChanged: useCallback((v: string) => dispatch(actions.updateName(v)), [dispatch]),
+      onEmailChanged: useCallback((v: string) => dispatch(actions.updateEmail(v)), [dispatch]),
+    }
+  };
 };
 
-export type Props = ReturnType<typeof usePrepareProps>;
+export interface Props {
+  render?: React.FC<InnerProps>
+}
 
-export default containerFactory(Component, usePrepareProps);
+export default (props: Props) => {
+  const innerProps = usePrepareProps();
+
+  return createRenderFunction(Component, props.render)(innerProps);
+};
+

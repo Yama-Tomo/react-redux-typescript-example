@@ -1,12 +1,21 @@
 import * as React from 'react';
-import { Props } from '../containers/counter';
+
+export interface Props {
+  data: {
+    currentVal: number;
+  },
+  handlers: {
+    onIncrementClicked: () => void;
+    onDecrementClicked: () => void;
+  }
+}
 
 // NOTE: 無駄な再描画をしなくて済むようにボタンだけは別コンポーネントへ切り出す
-const Buttons = React.memo((props: Pick<Props, 'increment' | 'decrement'>) => {
+const Buttons = React.memo((props: Props['handlers']) => {
   return (
     <>
-      <button onClick={props.increment}>increment</button>
-      <button onClick={props.decrement}>decrement</button>
+      <button onClick={props.onIncrementClicked}>increment</button>
+      <button onClick={props.onDecrementClicked}>decrement</button>
     </>
   );
 });
@@ -14,8 +23,8 @@ const Buttons = React.memo((props: Pick<Props, 'increment' | 'decrement'>) => {
 export default (props: Props) => {
   return (
     <>
-      <p>{props.currentValue}</p>
-      <Buttons increment={props.increment} decrement={props.decrement} />
+      <p>{props.data.currentVal}</p>
+      <Buttons {...props.handlers} />
     </>
   );
 };
