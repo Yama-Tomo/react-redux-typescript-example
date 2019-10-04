@@ -1,5 +1,6 @@
 import * as React from 'react';
 import styled from 'styled-components';
+import { useRef, useEffect } from 'react';
 
 export interface Props {
   data: {
@@ -14,18 +15,18 @@ export interface Props {
   handlers: {
     onPrefectureChanged: (v: React.ChangeEvent<HTMLInputElement>) => void;
     onPrefectureKeydown: (v: React.KeyboardEvent<HTMLInputElement>) => void;
-    onPrefectureBlur: (v: React.FocusEvent<HTMLInputElement>) => void;
+    onPrefectureBlur: () => void;
   }
 }
 
 const AutocompleteWrap = styled.div`
-  width: 71%;
+  width: 100%;
   background-color: white;
 `;
 
 const AutocompleteItems = styled.ul`
-  margin-top: 5px;
-  margin-bottom: 5px;
+  margin-top: 0px;
+  margin-bottom: 0px;
   text-align: left;
   padding-left: 25px;
   color: #333;
@@ -59,24 +60,42 @@ const AutocompleteLists = (props: { items: string[], cursor: number }) => {
 
 const Input = styled.input`
   font-size: 17px;
-  width: 70%;
+  width: 100%;
 `;
 
+const useOutsideClickDetect = (ref: React.MutableRefObject<HTMLInputElement|null>, cb: () => void) => {
+  const eventHandler = (event: MouseEvent|FocusEvent) =>
+    ref.current && !ref.current.contains(event.target as Node) && cb();
+
+  useEffect(() => {
+    document.addEventListener('focusin', eventHandler);
+    document.addEventListener('mousedown', eventHandler);
+    return () => {
+      document.removeEventListener('focusin', eventHandler);
+      document.removeEventListener('mousedown', eventHandler);
+    }
+  });
+};
+
 export default (props: Props) => {
+  const wrapRef = useRef(null);
+  useOutsideClickDetect(wrapRef, props.handlers.onPrefectureBlur);
+
   return (
-    <>
+    <div
+      ref={wrapRef}
+    >
       <Input
         type="text"
         placeholder="prefecture"
         value={props.data.prefecture}
         onChange={props.handlers.onPrefectureChanged}
         onKeyDown={props.handlers.onPrefectureKeydown}
-        onBlur={props.handlers.onPrefectureBlur}
       />
       <AutocompleteLists
         items={props.data.autocomplete.prefecture.items}
         cursor={props.data.autocomplete.prefecture.cursor}
       />
-    </>
+    </div>
   );
 };
