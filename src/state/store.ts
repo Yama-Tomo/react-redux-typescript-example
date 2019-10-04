@@ -2,12 +2,12 @@ import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
 import logger from 'redux-logger';
 
-import name from './name';
-import counter from './counter';
+import * as nameModule from './name';
+import * as counterModule from './counter';
 
 const rootReducer = combineReducers({
-  name: name.reducer,
-  counter: counter.reducer,
+  name: nameModule.default.reducer,
+  counter: counterModule.default.reducer,
 });
 
 export type RootState = ReturnType<typeof rootReducer>;
