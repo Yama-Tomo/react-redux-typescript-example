@@ -3,6 +3,7 @@ import './App.css';
 import styled, { ThemeProvider } from 'styled-components';
 import NameContainer from './containers/name';
 import CounterContainer from './containers/counter';
+import SearchContainer from './containers/search';
 
 const H2 = styled.h2`
   background-color: #454545;
@@ -25,6 +26,8 @@ const App: React.FC = () => {
         </ThemeProvider>
         <Separator />
         <CounterContainer />
+        <Separator />
+        <SearchContainer />
       </header>
     </div>
   );
