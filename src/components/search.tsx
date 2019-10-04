@@ -16,6 +16,7 @@ export interface Props {
     onPrefectureChanged: (v: React.ChangeEvent<HTMLInputElement>) => void;
     onPrefectureKeydown: (v: React.KeyboardEvent<HTMLInputElement>) => void;
     onPrefectureBlur: () => void;
+    onPrefectureAutocompleteClicked: (v: string) => void;
   }
 }
 
@@ -37,7 +38,7 @@ const AutocompleteItem = styled.li`
   background-color: ${(props: { active: boolean }) => props.active ? '#ddd' : 'white'}}
 `;
 
-const AutocompleteLists = (props: { items: string[], cursor: number }) => {
+const AutocompleteLists = (props: { items: string[], cursor: number, onItemClicked: (v: string) => void }) => {
   if (props.items.length === 0) {
     return null;
   }
@@ -49,6 +50,7 @@ const AutocompleteLists = (props: { items: string[], cursor: number }) => {
           <AutocompleteItem
             key={`${v}-${index}`}
             active={index === props.cursor}
+            onClick={() => props.onItemClicked(v)}
           >
           {v}
           </AutocompleteItem>
@@ -95,6 +97,7 @@ export default (props: Props) => {
       <AutocompleteLists
         items={props.data.autocomplete.prefecture.items}
         cursor={props.data.autocomplete.prefecture.cursor}
+        onItemClicked={props.handlers.onPrefectureAutocompleteClicked}
       />
     </div>
   );

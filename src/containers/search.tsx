@@ -16,6 +16,12 @@ const usePrepareInnerProps = (): InnerProps => {
   const state = useSelector((state: RootState) => state.search);
   const dispatch = useDispatch();
 
+  const ensureInputVal = useCallback((v: string) => {
+    dispatch(actions.setPref(v));
+    dispatch(actions.resetPrefAutocompleteCursor());
+    dispatch(actions.setPrefAutocomplete([]));
+  }, [dispatch]);
+
   return {
     data: {
       prefecture: state.autocomplete.prefecture.cursor === NOT_AUTOCOMPLETE_CHOICE
@@ -42,15 +48,16 @@ const usePrepareInnerProps = (): InnerProps => {
         }
 
         if (v.keyCode === keys.enter) {
-          dispatch(actions.setPref((v.target as any).value));
-          dispatch(actions.resetPrefAutocompleteCursor());
-          dispatch(actions.setPrefAutocomplete([]));
+          ensureInputVal((v.target as any).value);
         }
-      }, [dispatch]),
+      }, [dispatch, ensureInputVal]),
       onPrefectureBlur: useCallback(() => {
         dispatch(actions.resetPrefAutocompleteCursor());
         dispatch(actions.setPrefAutocomplete([]));
       }, [dispatch]),
+      onPrefectureAutocompleteClicked: useCallback((v) => {
+        ensureInputVal(v);
+      }, [ensureInputVal])
     }
   };
 };
