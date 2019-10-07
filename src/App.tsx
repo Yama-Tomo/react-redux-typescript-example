@@ -3,14 +3,13 @@ import { useSelector } from 'react-redux';
 import { RootState } from './state/store';
 import { Route, Switch } from 'react-router';
 
-import './App.css';
-import logo from './logo.svg';
 import styled, { CSSObject, ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { AppBar,Typography,CssBaseline, Toolbar, Drawer, List, ListItem, ListItemText, Theme } from '@material-ui/core';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/styles';
 import * as Themes from './theme';
 import { Link } from 'react-router-dom';
 
+import Home from './components/home';
 import NameContainer from './containers/name';
 import CounterContainer from './containers/counter';
 import SearchContainer from './containers/search';
@@ -37,16 +36,6 @@ const Main = styled.main`
   padding: ${(props: { theme: Theme }) => props.theme.spacing(2)}px;
   flex-grow: 1;
   min-height: 100vh;
-`;
-
-const Home = styled.div`
-  background-color: ${(props: { theme: Theme }) => props.theme.palette.background.paper};
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  width: 100%;
-  height: 100%;
 `;
 
 const ToolbarSpacing = styled.div((props: { theme: Theme }) => props.theme.mixins.toolbar as CSSObject);
@@ -91,10 +80,7 @@ const App: React.FC = () => {
               {!isHome && <ToolbarSpacing />}
               <Switch>
                 <Route exact path="/">
-                  <Home>
-                    <img src={logo} className="App-logo" alt="logo" />
-                    <p style={{'fontSize': '1.3rem'}}>Welcome to React example</p>
-                  </Home>
+                  <Home />
                 </Route>
                 <Route path="/basic-input">
                   <NameContainer />
