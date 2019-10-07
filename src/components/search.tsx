@@ -1,6 +1,6 @@
 import * as React from 'react';
-import styled from 'styled-components';
 import { useRef, useEffect } from 'react';
+import { TextField, FormControl, List, ListItem, ListItemText, Box } from '@material-ui/core';
 
 export interface Props {
   data: {
@@ -20,50 +20,31 @@ export interface Props {
   }
 }
 
-const AutocompleteWrap = styled.div`
-  width: 100%;
-  background-color: white;
-`;
-
-const AutocompleteItems = styled.ul`
-  margin-top: 0px;
-  margin-bottom: 0px;
-  text-align: left;
-  padding-left: 25px;
-  color: #333;
-  font-size: 14px;
-`;
-
-const AutocompleteItem = styled.li`
-  background-color: ${(props: { active: boolean }) => props.active ? '#ddd' : 'white'}}
-`;
-
 const AutocompleteLists = (props: { items: string[], cursor: number, onItemClicked: (v: string) => void }) => {
   if (props.items.length === 0) {
     return null;
   }
 
   return (
-    <AutocompleteWrap>
-      <AutocompleteItems>
+    <Box
+      boxShadow={1}
+      style={{position: 'absolute', width: '100%', top: 'calc(100% - 7px)', backgroundColor: 'white'}}
+    >
+      <List dense={true} disablePadding={true}>
         {props.items.map((v, index) =>
-          <AutocompleteItem
-            key={`${v}-${index}`}
-            active={index === props.cursor}
-            onClick={() => props.onItemClicked(v)}
-          >
-          {v}
-          </AutocompleteItem>
+          <ListItem selected={index === props.cursor}>
+            <ListItemText
+              key={`${v}-${index}`}
+              onClick={() => props.onItemClicked(v)}
+            >
+            {v}
+            </ListItemText>
+          </ListItem>
         )}
-      </AutocompleteItems>
-    </AutocompleteWrap>
+      </List>
+    </Box>
   );
 };
-
-const Input = styled.input`
-  font-size: 17px;
-  width: 100%;
-`;
 
 const useOutsideClickDetect = (ref: React.MutableRefObject<HTMLInputElement|null>, cb: () => void) => {
   const eventHandler = (event: MouseEvent|FocusEvent) =>
@@ -84,21 +65,20 @@ export default (props: Props) => {
   useOutsideClickDetect(wrapRef, props.handlers.onPrefectureBlur);
 
   return (
-    <div
-      ref={wrapRef}
-    >
-      <Input
-        type="text"
-        placeholder="prefecture"
+    <FormControl fullWidth ref={wrapRef}>
+      <TextField
+        label="prefecture"
+        placeholder='please input prefecture'
         value={props.data.prefecture}
         onChange={props.handlers.onPrefectureChanged}
         onKeyDown={props.handlers.onPrefectureKeydown}
+        margin="normal"
       />
       <AutocompleteLists
         items={props.data.autocomplete.prefecture.items}
         cursor={props.data.autocomplete.prefecture.cursor}
         onItemClicked={props.handlers.onPrefectureAutocompleteClicked}
       />
-    </div>
+    </FormControl>
   );
 };
