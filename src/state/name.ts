@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from 'redux-starter-kit';
 import { RootState } from './store';
+import { hasKey } from '../libs/functions/type_guard';
 
 export interface State {
   name: string;
@@ -10,6 +11,17 @@ const initialState = (): State => ({
   name: '',
   email: ''
 });
+
+export const preloadedStateResolver = (unresolvedState: Object): State => {
+  if (hasKey(unresolvedState, 'name') && hasKey(unresolvedState.name, ['name', 'email'] as const)) {
+    return {
+      name: String(unresolvedState.name.name),
+      email: String(unresolvedState.name.email),
+    };
+  }
+
+  return initialState();
+};
 
 const slice = createSlice({
   slice: 'name',
