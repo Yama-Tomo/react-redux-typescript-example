@@ -24,7 +24,5 @@ export const selectors = {
   nameAndEmail: (state: RootState) => `name: ${state.name.name} - email: ${state.name.email}`
 };
 
-// TODO: sagaの実装をこのファイルに入れる
-
 export const actions = slice.actions;
 export default slice;
