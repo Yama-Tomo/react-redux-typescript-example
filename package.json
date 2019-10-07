@@ -8,6 +8,7 @@
     "@types/react": "16.9.4",
     "@types/react-dom": "16.9.1",
     "connected-react-router": "^6.5.2",
+    "history": "^4.10.1",
     "lodash": "^4.17.15",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
