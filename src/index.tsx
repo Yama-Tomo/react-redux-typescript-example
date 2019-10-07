@@ -8,7 +8,7 @@ import Store, { history } from './state/store';
 import * as serviceWorker from './serviceWorker';
 
 ReactDOM.render(
-  <Provider store={Store()}>
+  <Provider store={Store((window as any).__initial_state__)}>
     <ConnectedRouter history={history}>
       <App />
     </ConnectedRouter>
