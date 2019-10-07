@@ -6,14 +6,14 @@ export interface State {
   email: string;
 }
 
-const initialState: State = {
+const initialState = (): State => ({
   name: '',
   email: ''
-};
+});
 
 const slice = createSlice({
   slice: 'name',
-  initialState,
+  initialState: initialState(),
   reducers: {
     updateName: (state, action: PayloadAction<string>) => { state.name = action.payload },
     updateEmail: (state, action: PayloadAction<string>) => { state.email = action.payload },
