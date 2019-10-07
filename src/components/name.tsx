@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { Input } from './generics/input';
+import { TextField, FormControl } from '@material-ui/core';
 
 export interface Props {
   data: {
@@ -17,18 +17,24 @@ export default (props: Props) => {
   return (
     <>
       <p>{props.data.info}</p>
-      <Input
-        type="text"
-        placeholder="name"
-        value={props.data.name}
-        onChange={(e) => props.handlers.onNameChanged(e.target.value)}
-      />
-      <Input
-        type="text"
-        placeholder="email"
-        value={props.data.email}
-        onChange={(e) => props.handlers.onEmailChanged(e.target.value)}
-      />
+      <FormControl fullWidth>
+        <TextField
+          label="name"
+          placeholder='please input your name'
+          value={props.data.name}
+          onChange={(e) => props.handlers.onNameChanged(e.target.value)}
+          margin="normal"
+        />
+      </FormControl>
+      <FormControl fullWidth>
+        <TextField
+          label="e-mail"
+          placeholder='please input your e-mail'
+          value={props.data.email}
+          onChange={(e) => props.handlers.onEmailChanged(e.target.value)}
+          margin="normal"
+        />
+      </FormControl>
     </>
   );
 };
