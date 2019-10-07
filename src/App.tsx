@@ -1,18 +1,16 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from './state/store';
-import { Route, Switch } from 'react-router';
+import { Route, RouteProps, Switch } from 'react-router';
+import routes from './routes'
+import { keys } from './libs/functions/object';
 
 import styled, { CSSObject, ThemeProvider as StyledThemeProvider } from 'styled-components';
 import { AppBar,Typography,CssBaseline, Toolbar, Drawer, List, ListItem, ListItemText, Theme } from '@material-ui/core';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/styles';
 import * as Themes from './theme';
 import { Link } from 'react-router-dom';
-
-import Home from './components/home';
-import NameContainer from './containers/name';
-import CounterContainer from './containers/counter';
-import SearchContainer from './containers/search';
+import { ListItemTextProps } from '@material-ui/core/ListItemText';
 
 const Container = styled.div`
   display: flex;
@@ -40,6 +38,15 @@ const Main = styled.main`
 
 const ToolbarSpacing = styled.div((props: { theme: Theme }) => props.theme.mixins.toolbar as CSSObject);
 
+const NavItem = (props: { currentPath: string, to: RouteProps['path'], itemProps: ListItemTextProps }) => {
+  const to = Array.isArray(props.to) ? props.to.join() : String(props.to);
+  return (
+    <ListItem selected={props.currentPath === to} button component={Link} to={to}>
+      <ListItemText {...props.itemProps} />
+    </ListItem>
+  );
+};
+
 const App: React.FC = () => {
   const currentPath = useSelector((state: RootState) => state.router.location.pathname);
   const isHome = currentPath === '/';
@@ -60,18 +67,26 @@ const App: React.FC = () => {
                 <StyledDrawer variant="permanent">
                   <ToolbarSpacing />
                   <List>
-                    <ListItem selected={currentPath === '/'} button component={Link} to='/'>
-                      <ListItemText primary={'home'} />
-                    </ListItem>
-                    <ListItem selected={currentPath === '/basic-input'} button component={Link} to='/basic-input'>
-                      <ListItemText primary={'basic redux usage'} />
-                    </ListItem>
-                    <ListItem selected={currentPath === '/counter'} button component={Link} to='/counter'>
-                      <ListItemText primary={'counter'} />
-                    </ListItem>
-                    <ListItem selected={currentPath === '/autocomplete-with-redux-saga'} button component={Link} to='/autocomplete-with-redux-saga'>
-                      <ListItemText primary={'redux saga'} secondary={'autocomplete'} />
-                    </ListItem>
+                    <NavItem
+                      currentPath={currentPath}
+                      to={routes.home.routeOpts.path}
+                      itemProps={{ primary: 'home' }}
+                    />
+                    <NavItem
+                      currentPath={currentPath}
+                      to={routes.name.routeOpts.path}
+                      itemProps={{ primary: 'basic redux usage' }}
+                    />
+                    <NavItem
+                      currentPath={currentPath}
+                      to={routes.counter.routeOpts.path}
+                      itemProps={{ primary: 'counter' }}
+                    />
+                    <NavItem
+                      currentPath={currentPath}
+                      to={routes.search.routeOpts.path}
+                      itemProps={{ primary: 'redux saga', secondary: 'autocomplete' }}
+                    />
                   </List>
                 </StyledDrawer>
               </StyledThemeProvider>
@@ -79,18 +94,11 @@ const App: React.FC = () => {
             <Main>
               {!isHome && <ToolbarSpacing />}
               <Switch>
-                <Route exact path="/">
-                  <Home />
-                </Route>
-                <Route path="/basic-input">
-                  <NameContainer />
-                </Route>
-                <Route path="/counter" >
-                  <CounterContainer />
-                </Route>
-                <Route path="/autocomplete-with-redux-saga" >
-                  <SearchContainer />
-                </Route>
+                {keys(routes).map(key => (
+                  <Route {...routes[key].routeOpts} key={key}>
+                    {routes[key].render()}
+                  </Route>
+                ))}
               </Switch>
             </Main>
           </Container>

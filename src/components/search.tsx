@@ -32,11 +32,8 @@ const AutocompleteLists = (props: { items: string[], cursor: number, onItemClick
     >
       <List dense={true} disablePadding={true}>
         {props.items.map((v, index) =>
-          <ListItem selected={index === props.cursor}>
-            <ListItemText
-              key={`${v}-${index}`}
-              onClick={() => props.onItemClicked(v)}
-            >
+          <ListItem selected={index === props.cursor} key={`${v}-${index}`}>
+            <ListItemText onClick={() => props.onItemClicked(v)}>
             {v}
             </ListItemText>
           </ListItem>
