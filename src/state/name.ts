@@ -1,6 +1,7 @@
-import { createSlice, PayloadAction } from 'redux-starter-kit';
+import { createSlice } from 'redux-starter-kit';
 import { RootState } from './store';
 import { hasKey } from '../libs/functions/type_guard';
+import { set } from './utils';
 
 export interface State {
   name: string;
@@ -27,8 +28,7 @@ const slice = createSlice({
   slice: 'name',
   initialState: initialState(),
   reducers: {
-    updateName: (state, action: PayloadAction<string>) => { state.name = action.payload },
-    updateEmail: (state, action: PayloadAction<string>) => { state.email = action.payload },
+    set: set<State>(),
   }
 });
 
