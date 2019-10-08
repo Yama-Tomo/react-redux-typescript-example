@@ -1,26 +1,27 @@
-import { useCallback } from 'react';
+import React, { useCallback } from 'react';
 import { useDispatch, useSelector } from "react-redux";
 import { RootState } from '../state/store';
 import { actions, NOT_AUTOCOMPLETE_CHOICE } from '../state/search';
 import { createRenderFunction } from './utils';
 import Component, { Props as InnerProps } from '../components/search';
-import * as React from 'react';
-
-const keys = {
-  up: 38,
-  down: 40,
-  enter: 13
-};
+import { keyCodes} from '../libs/constants/key';
 
 const usePrepareInnerProps = (): InnerProps => {
   const state = useSelector((state: RootState) => state.search);
   const dispatch = useDispatch();
 
-  const ensureInputVal = useCallback((v: string) => {
-    dispatch(actions.setPref(v));
-    dispatch(actions.resetPrefAutocompleteCursor());
-    dispatch(actions.setPrefAutocomplete([]));
+  const resetAutocomplete = useCallback(() => {
+    dispatch(actions.set({
+      autocomplete: { prefecture: { items: [] } }
+    }));
+
+    dispatch(actions.setPrefAutocompleteCursor('reset'));
   }, [dispatch]);
+
+  const ensureInputVal = useCallback((prefecture: string) => {
+    dispatch(actions.set({ prefecture }));
+    resetAutocomplete();
+  }, [dispatch, resetAutocomplete]);
 
   return {
     data: {
@@ -32,29 +33,29 @@ const usePrepareInnerProps = (): InnerProps => {
     handlers: {
       onPrefectureChanged: useCallback((v: React.ChangeEvent<HTMLInputElement>) => {
         const inputVal = v.target.value;
-        dispatch(actions.setPref(inputVal));
+
+        ensureInputVal(inputVal);
         dispatch(actions.fetchAutocomplete(inputVal));
-        dispatch(actions.resetPrefAutocompleteCursor());
-      }, [dispatch]),
+      }, [dispatch, ensureInputVal]),
       onPrefectureKeydown: useCallback((v: React.KeyboardEvent<HTMLInputElement>) => {
-        if (v.keyCode === keys.down) {
-          dispatch(actions.setPrefAutocompleteCursorDown());
+        if (v.keyCode === keyCodes.down) {
+          dispatch(actions.setPrefAutocompleteCursor('down'));
+          dispatch(actions.fetchAutocompleteWhenCursorDown());
           v.preventDefault();
         }
 
-        if (v.keyCode === keys.up) {
-          dispatch(actions.setPrefAutocompleteCursorUp());
+        if (v.keyCode === keyCodes.up) {
+          dispatch(actions.setPrefAutocompleteCursor('up'));
           v.preventDefault();
         }
 
-        if (v.keyCode === keys.enter) {
+        if (v.keyCode === keyCodes.enter) {
           ensureInputVal((v.target as any).value);
         }
       }, [dispatch, ensureInputVal]),
       onPrefectureBlur: useCallback(() => {
-        dispatch(actions.resetPrefAutocompleteCursor());
-        dispatch(actions.setPrefAutocomplete([]));
-      }, [dispatch]),
+        resetAutocomplete();
+      }, [resetAutocomplete]),
       onPrefectureAutocompleteClicked: useCallback((v) => {
         ensureInputVal(v);
       }, [ensureInputVal])

@@ -2,6 +2,7 @@ import { createSlice, PayloadAction } from 'redux-starter-kit';
 import { call, put, delay, takeLatest, all, select } from 'redux-saga/effects';
 import { ResolvedType } from '../types/promise';
 import { RootState } from './store';
+import { set } from './utils';
 
 interface State {
   prefecture: string;
@@ -28,29 +29,26 @@ const slice = createSlice({
   slice: 'search',
   initialState: initialState(),
   reducers: {
-    setPref: (state, action: PayloadAction<string>) => {
-      state.prefecture = action.payload;
-    },
+    set: set<State>(),
     fetchAutocomplete:(state, action: PayloadAction<string>) => {},
-    setPrefAutocomplete: (state, action: PayloadAction<string[]>) => {
-      state.autocomplete.prefecture.items = action.payload;
-    },
-    resetPrefAutocompleteCursor:(state, action: PayloadAction<void>) => {
-      state.autocomplete.prefecture.cursor =
-        initialState().autocomplete.prefecture.cursor;
-    },
-    setPrefAutocompleteCursorDown: (state, action: PayloadAction<void>) => {
+    fetchAutocompleteWhenCursorDown:(state, action: PayloadAction<void>) => {},
+    setPrefAutocompleteCursor: (state, action: PayloadAction<'up' | 'down' | 'reset'>) => {
       const prefAutocomplete = state.autocomplete.prefecture;
 
-      if (prefAutocomplete.items.length - 1  > prefAutocomplete.cursor) {
-        prefAutocomplete.cursor += 1;
+      if (action.payload === 'down') {
+        if (prefAutocomplete.items.length - 1  > prefAutocomplete.cursor) {
+          prefAutocomplete.cursor += 1;
+        }
       }
-    },
-    setPrefAutocompleteCursorUp: (state, action: PayloadAction<void>) => {
-      const prefAutocomplete = state.autocomplete.prefecture;
 
-      if (prefAutocomplete.cursor >= 0) {
-        prefAutocomplete.cursor -= 1;
+      if (action.payload === 'up') {
+        if (prefAutocomplete.cursor >= 0) {
+          prefAutocomplete.cursor -= 1;
+        }
+      }
+
+      if (action.payload === 'reset') {
+        prefAutocomplete.cursor = initialState().autocomplete.prefecture.cursor;
       }
     },
   }
@@ -67,9 +65,9 @@ function* fetchPrefs(searchWord: string) {
 
   if (searchWord) {
     const apiResponse: ResolvedType<ReturnType<typeof request>> = yield call(request, searchWord);
-    yield put(actions.setPrefAutocomplete(apiResponse))
+    yield put(actions.set({ autocomplete: { prefecture: { items: apiResponse } } }))
   } else {
-    yield put(actions.setPrefAutocomplete([]));
+    yield put(actions.set({ autocomplete: { prefecture: { items: [] } } }))
   }
 }
 
@@ -82,8 +80,8 @@ function* handleFetchPrefAutocomplete() {
         yield fetchPrefs(action.payload);
       }
     ),
-    takeLatest<ReturnType<typeof actions.setPrefAutocompleteCursorDown>>(
-      actions.setPrefAutocompleteCursorDown.type,
+    takeLatest<ReturnType<typeof actions.fetchAutocompleteWhenCursorDown>>(
+      actions.fetchAutocompleteWhenCursorDown.type,
       function* () {
         const rootState: RootState = yield select();
         if (!rootState.search.autocomplete.prefecture.items.length) {

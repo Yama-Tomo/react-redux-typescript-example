@@ -15,8 +15,8 @@ const usePrepareInnerProps = (): InnerProps => {
       ...rootState.name,
     },
     handlers: {
-      onNameChanged: useCallback((v: string) => dispatch(actions.updateName(v)), [dispatch]),
-      onEmailChanged: useCallback((v: string) => dispatch(actions.updateEmail(v)), [dispatch]),
+      onNameChanged: useCallback((v: string) => dispatch(actions.set({ name: v })), [dispatch]),
+      onEmailChanged: useCallback((v: string) => dispatch(actions.set({ email: v })), [dispatch]),
     }
   };
 };
