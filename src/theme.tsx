@@ -1,4 +1,7 @@
-import { createMuiTheme } from '@material-ui/core';
+import { createMuiTheme, Theme } from '@material-ui/core';
+import { ThemeProvider as StyledThemeProvider } from 'styled-components';
+import { ThemeProvider as MuiThemeProvider } from '@material-ui/styles';
+import React from 'react';
 
 export const main = createMuiTheme({
   palette: {
@@ -16,7 +19,6 @@ export const main = createMuiTheme({
     }
   }
 });
-
 
 export const dark = createMuiTheme({
   palette: {
@@ -36,3 +38,11 @@ export const dark = createMuiTheme({
     }
   }
 });
+
+export const ThemeProvider = (props: { theme?: Theme, children?: React.ReactChild }) => (
+  <MuiThemeProvider theme={props.theme}>
+    <StyledThemeProvider theme={props.theme}>
+      {props.children}
+    </StyledThemeProvider>
+  </MuiThemeProvider>
+);
