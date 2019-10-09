@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from 'redux-starter-kit';
 import { set } from './utils';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 interface State {
   prefecture: string;
@@ -27,7 +28,6 @@ const slice = createSlice({
   initialState: initialState(),
   reducers: {
     set: set<State>(),
-    reset: (state, action: PayloadAction<void>) => initialState(),
     setPrefAutocompleteCursor: (state, action: PayloadAction<'up' | 'down' | 'reset'>) => {
       const prefAutocomplete = state.autocomplete.prefecture;
 
@@ -47,6 +47,9 @@ const slice = createSlice({
         prefAutocomplete.cursor = initialState().autocomplete.prefecture.cursor;
       }
     },
+  },
+  extraReducers: {
+    [LOCATION_CHANGE]: () => initialState(),
   }
 });
 

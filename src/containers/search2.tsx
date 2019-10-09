@@ -45,11 +45,10 @@ const usePrepareInnerProps = (): InnerProps => {
   // unmount process
   useEffect(() => {
     return () => {
-      dispatch(actions.reset());
       fetchAutocompleteQueues.current = [];
       setFetchTrigger({ onInput: '', onDownPress: '' })
     }
-  },[dispatch]);
+  }, []);
 
   useEffect(() => {
     fetchAutocompleteQueues.current.push(fetchTrigger.onInput);

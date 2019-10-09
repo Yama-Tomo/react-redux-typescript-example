@@ -3,6 +3,7 @@ import { call, put, delay, takeLatest, all, select } from 'redux-saga/effects';
 import { ResolvedType } from '../types/promise';
 import { RootState } from './store';
 import { set } from './utils';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 interface State {
   prefecture: string;
@@ -24,6 +25,7 @@ const initialState = (): State => ({
     }
   },
 });
+
 
 const slice = createSlice({
   slice: 'search',
@@ -51,6 +53,9 @@ const slice = createSlice({
         prefAutocomplete.cursor = initialState().autocomplete.prefecture.cursor;
       }
     },
+  },
+  extraReducers: {
+    [LOCATION_CHANGE]: () => initialState(),
   }
 });
 

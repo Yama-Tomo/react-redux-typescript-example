@@ -1,5 +1,6 @@
 import { createSlice } from 'redux-starter-kit';
 import { hasKey } from '../libs/functions/type_guard';
+import { LOCATION_CHANGE } from 'connected-react-router';
 
 export type State = number;
 const initialState = (): State => 0;
@@ -18,6 +19,9 @@ const slice = createSlice({
   reducers: {
     increment: (state) => state + 1,
     decrement: (state) => state - 1
+  },
+  extraReducers: {
+    [LOCATION_CHANGE]: () => initialState(),
   }
 });
 
