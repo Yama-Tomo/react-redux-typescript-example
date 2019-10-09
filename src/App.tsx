@@ -53,50 +53,61 @@ const Main = styled.main`
 const Footer = styled.footer`
   margin: auto;
   padding: 10px;
-`
+`;
 
 const ToolbarSpacing = styled.div((props: { theme: Theme }) => props.theme.mixins.toolbar as CSSObject);
 
-const NavItem = (props: { currentPath: string, to: RouteProps['path'], itemProps: ListItemTextProps }) => {
+const NavItem = (props: {
+  currentPath: string,
+  to: RouteProps['path'],
+  itemProps: ListItemTextProps,
+  onItemClick?: () => void
+}) => {
   const to = Array.isArray(props.to) ? props.to.join() : String(props.to);
   return (
-    <ListItem selected={props.currentPath === to} button component={Link} to={to}>
+    <ListItem selected={props.currentPath === to} button component={Link} to={to} onClick={props.onItemClick}>
       <ListItemText {...props.itemProps} />
     </ListItem>
   );
 };
 
-const NavItems = React.memo((props: { currentPath: string }) => (
+const NavItems = React.memo((props: { currentPath: string, onItemClick?: () => void }) => (
   <List>
     <NavItem
       currentPath={props.currentPath}
       to={routes.home.routeOpts.path}
       itemProps={{ primary: 'home' }}
+      onItemClick={props.onItemClick}
     />
     <NavItem
       currentPath={props.currentPath}
       to={routes.name.routeOpts.path}
       itemProps={{ primary: 'basic redux usage' }}
+      onItemClick={props.onItemClick}
     />
     <NavItem
       currentPath={props.currentPath}
       to={routes.counter.routeOpts.path}
-      itemProps={{ primary: 'counter' }}
+      itemProps={{ primary: 'counter'}}
+      onItemClick={props.onItemClick}
     />
     <NavItem
       currentPath={props.currentPath}
       to={routes.search.routeOpts.path}
       itemProps={{ primary: 'redux saga', secondary: 'autocomplete' }}
+      onItemClick={props.onItemClick}
     />
     <NavItem
       currentPath={props.currentPath}
       to={routes.search2.routeOpts.path}
       itemProps={{ primary: 'hooks', secondary: 'autocomplete' }}
+      onItemClick={props.onItemClick}
     />
     <NavItem
       currentPath={props.currentPath}
       to={routes.secret.routeOpts.path}
-      itemProps={{ primary: 'secret'}}
+      itemProps={{ primary: 'secret' }}
+      onItemClick={props.onItemClick}
     />
   </List>
 ));
@@ -138,7 +149,7 @@ const App: React.FC = () => {
                       keepMounted: true, // Better open performance on mobile.
                     }}
                   >
-                    <NavItems currentPath={currentPath} />
+                    <NavItems currentPath={currentPath} onItemClick={() => setMobileDrawer(false)} />
                   </Drawer>
                 </Hidden>
               </StyledThemeProvider>
