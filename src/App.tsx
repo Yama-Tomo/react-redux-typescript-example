@@ -37,11 +37,23 @@ const StyledIconButton = styled(IconButton)((props: { theme: Theme }) => ({
   }
 }));
 
+const Wrap = styled.div`
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+`;
+
 const Main = styled.main`
   padding: ${(props: { theme: Theme }) => props.theme.spacing(2)}px;
   flex-grow: 1;
-  min-height: 100vh;
+  height: 100%;
 `;
+
+const Footer = styled.footer`
+  margin: auto;
+  padding: 10px;
+`
 
 const ToolbarSpacing = styled.div((props: { theme: Theme }) => props.theme.mixins.toolbar as CSSObject);
 
@@ -143,15 +155,26 @@ const App: React.FC = () => {
               </StyledThemeProvider>
             </MuiThemeProvider>
 
-            <Main>
-              {!isHome && <ToolbarSpacing />}
-              <Switch>
-                {keys(routes).map(key => {
-                  const route = routes[key];
-                  return route.render({...route.routeOpts, key})
-                })}
-              </Switch>
-            </Main>
+            <Wrap>
+              <Main>
+                <ToolbarSpacing />
+                <Switch>
+                  {keys(routes).map(key => {
+                    const route = routes[key];
+                    return route.render({...route.routeOpts, key})
+                  })}
+                </Switch>
+              </Main>
+              <Footer>
+                Copyright © Yama-Tomo
+                <a
+                  href="https://github.com/Yama-Tomo/react-redux-typescript-example"
+                  style={{ marginLeft: '10px' }}
+                >
+                  source code
+                </a>
+              </Footer>
+            </Wrap>
           </Container>
         </StyledThemeProvider>
       </MuiThemeProvider>
