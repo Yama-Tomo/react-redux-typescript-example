@@ -48,10 +48,8 @@ const useOutsideClickDetect = (ref: React.MutableRefObject<HTMLInputElement|null
     ref.current && !ref.current.contains(event.target as Node) && cb();
 
   useEffect(() => {
-    document.addEventListener('focusin', eventHandler);
     document.addEventListener('mousedown', eventHandler);
     return () => {
-      document.removeEventListener('focusin', eventHandler);
       document.removeEventListener('mousedown', eventHandler);
     }
   });
