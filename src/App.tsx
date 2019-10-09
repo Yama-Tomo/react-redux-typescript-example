@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from './state/store';
 import { RouteProps, Switch } from 'react-router';
@@ -6,8 +6,9 @@ import routes from './routes'
 import { keys } from './libs/functions/object';
 
 import styled, { CSSObject, ThemeProvider as StyledThemeProvider } from 'styled-components';
-import { AppBar,Typography,CssBaseline, Toolbar, Drawer, List, ListItem, ListItemText, Theme } from '@material-ui/core';
+import { AppBar,Typography,CssBaseline, Toolbar, Drawer, List, ListItem, ListItemText, Theme, Hidden, IconButton } from '@material-ui/core';
 import { ThemeProvider as MuiThemeProvider, StylesProvider } from '@material-ui/styles';
+import MenuIcon from '@material-ui/icons/Menu';
 import * as Themes from './theme';
 import { Link } from 'react-router-dom';
 import { ListItemTextProps } from '@material-ui/core/ListItemText';
@@ -30,6 +31,12 @@ const StyledDrawer = styled(Drawer)`
   }
 `;
 
+const StyledIconButton = styled(IconButton)((props: { theme: Theme }) => ({
+  [props.theme.breakpoints.up('sm')]: {
+    display: 'none',
+  }
+}));
+
 const Main = styled.main`
   padding: ${(props: { theme: Theme }) => props.theme.spacing(2)}px;
   flex-grow: 1;
@@ -47,10 +54,46 @@ const NavItem = (props: { currentPath: string, to: RouteProps['path'], itemProps
   );
 };
 
+const NavItems = React.memo((props: { currentPath: string }) => (
+  <List>
+    <NavItem
+      currentPath={props.currentPath}
+      to={routes.home.routeOpts.path}
+      itemProps={{ primary: 'home' }}
+    />
+    <NavItem
+      currentPath={props.currentPath}
+      to={routes.name.routeOpts.path}
+      itemProps={{ primary: 'basic redux usage' }}
+    />
+    <NavItem
+      currentPath={props.currentPath}
+      to={routes.counter.routeOpts.path}
+      itemProps={{ primary: 'counter' }}
+    />
+    <NavItem
+      currentPath={props.currentPath}
+      to={routes.search.routeOpts.path}
+      itemProps={{ primary: 'redux saga', secondary: 'autocomplete' }}
+    />
+    <NavItem
+      currentPath={props.currentPath}
+      to={routes.search2.routeOpts.path}
+      itemProps={{ primary: 'hooks', secondary: 'autocomplete' }}
+    />
+    <NavItem
+      currentPath={props.currentPath}
+      to={routes.secret.routeOpts.path}
+      itemProps={{ primary: 'secret'}}
+    />
+  </List>
+));
+
 const App: React.FC = () => {
   const currentPath = useSelector((state: RootState) => state.router.location.pathname);
   const isHome = currentPath === '/';
-
+  const [mobileDrawerOpen, setMobileDrawer] = useState(false);
+  const toggleMobileDrawer = () => setMobileDrawer(!mobileDrawerOpen);
 
   return (
     <StylesProvider injectFirst>
@@ -60,48 +103,46 @@ const App: React.FC = () => {
             <CssBaseline />
             <StyledAppBar position="fixed">
               <Toolbar>
+                <StyledIconButton
+                  color="inherit"
+                  aria-label="open drawer"
+                  onClick={toggleMobileDrawer}
+                  edge="start"
+                >
+                  <MenuIcon />
+                </StyledIconButton>
                 <Typography variant="h6" noWrap>React redux typescript example</Typography>
               </Toolbar>
             </StyledAppBar>
-            <MuiThemeProvider theme={Themes.dark}>
-              <StyledThemeProvider theme={Themes.dark}>
-                <StyledDrawer variant="permanent">
-                  <ToolbarSpacing />
-                  <List>
-                    <NavItem
-                      currentPath={currentPath}
-                      to={routes.home.routeOpts.path}
-                      itemProps={{ primary: 'home' }}
-                    />
-                    <NavItem
-                      currentPath={currentPath}
-                      to={routes.name.routeOpts.path}
-                      itemProps={{ primary: 'basic redux usage' }}
-                    />
-                    <NavItem
-                      currentPath={currentPath}
-                      to={routes.counter.routeOpts.path}
-                      itemProps={{ primary: 'counter' }}
-                    />
-                    <NavItem
-                      currentPath={currentPath}
-                      to={routes.search.routeOpts.path}
-                      itemProps={{ primary: 'redux saga', secondary: 'autocomplete' }}
-                    />
-                    <NavItem
-                      currentPath={currentPath}
-                      to={routes.search2.routeOpts.path}
-                      itemProps={{ primary: 'hooks', secondary: 'autocomplete' }}
-                    />
-                    <NavItem
-                      currentPath={currentPath}
-                      to={routes.secret.routeOpts.path}
-                      itemProps={{ primary: 'secret'}}
-                    />
-                  </List>
-                </StyledDrawer>
+
+            <MuiThemeProvider theme={Themes.main}>
+              <StyledThemeProvider theme={Themes.main}>
+                <Hidden smUp implementation="css">
+                  <Drawer
+                    variant="temporary"
+                    open={mobileDrawerOpen}
+                    onClose={toggleMobileDrawer}
+                    ModalProps={{
+                      keepMounted: true, // Better open performance on mobile.
+                    }}
+                  >
+                    <NavItems currentPath={currentPath} />
+                  </Drawer>
+                </Hidden>
               </StyledThemeProvider>
             </MuiThemeProvider>
+
+            <MuiThemeProvider theme={Themes.dark}>
+              <StyledThemeProvider theme={Themes.dark}>
+                <Hidden xsDown implementation="css">
+                  <StyledDrawer variant="permanent">
+                    <ToolbarSpacing />
+                    <NavItems currentPath={currentPath} />
+                  </StyledDrawer>
+                </Hidden>
+              </StyledThemeProvider>
+            </MuiThemeProvider>
+
             <Main>
               {!isHome && <ToolbarSpacing />}
               <Switch>
