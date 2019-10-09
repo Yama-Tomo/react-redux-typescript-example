@@ -1,7 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { RootState } from './state/store';
-import { Route, RouteProps, Switch } from 'react-router';
+import { RouteProps, Switch } from 'react-router';
 import routes from './routes'
 import { keys } from './libs/functions/object';
 
@@ -99,11 +99,10 @@ const App: React.FC = () => {
             <Main>
               {!isHome && <ToolbarSpacing />}
               <Switch>
-                {keys(routes).map(key => (
-                  <Route {...routes[key].routeOpts} key={key}>
-                    {routes[key].render()}
-                  </Route>
-                ))}
+                {keys(routes).map(key => {
+                  const route = routes[key];
+                  return route.render({...route.routeOpts, key})
+                })}
               </Switch>
             </Main>
           </Container>
