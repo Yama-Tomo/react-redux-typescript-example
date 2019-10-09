@@ -87,6 +87,11 @@ const App: React.FC = () => {
                       to={routes.search.routeOpts.path}
                       itemProps={{ primary: 'redux saga', secondary: 'autocomplete' }}
                     />
+                    <NavItem
+                      currentPath={currentPath}
+                      to={routes.search2.routeOpts.path}
+                      itemProps={{ primary: 'hooks', secondary: 'autocomplete' }}
+                    />
                   </List>
                 </StyledDrawer>
               </StyledThemeProvider>

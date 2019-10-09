@@ -6,11 +6,12 @@ import { createBrowserHistory } from 'history';
 import { connectRouter } from 'connected-react-router';
 import { all } from 'redux-saga/effects';
 import { isObject } from '../libs/functions/type_guard';
+import { NestedPartial } from '../types/util';
 
 import * as nameModule from './name';
 import * as counterModule from './counter';
 import * as searchModule from './search';
-import { NestedPartial } from '../types/util';
+import * as search2Module from './search2';
 
 export const history = createBrowserHistory();
 
@@ -19,6 +20,7 @@ const rootReducer = combineReducers({
   name: nameModule.default.reducer,
   counter: counterModule.default.reducer,
   search: searchModule.default.reducer,
+  search2: search2Module.default.reducer,
 });
 
 const preloadedStateResolver = (state: unknown): NestedPartial<RootState> => {
