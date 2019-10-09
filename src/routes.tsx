@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, RouteProps } from 'react-router';
+import PrivateRoute from './containers/private_route';
 import Home from './components/home';
 import NameContainer from './containers/name';
 import CounterContainer from './containers/counter';
@@ -33,12 +34,18 @@ const search2: RouteData = {
   render: (props) => <Route {...props}><Search2Container /></Route>
 };
 
+const secret: RouteData = {
+  routeOpts: { path: '/secret' },
+  render: (props) => <PrivateRoute {...props}><div>secret</div></PrivateRoute>
+};
+
 export const routes = {
   home,
   name,
   counter,
   search,
   search2,
+  secret,
 };
 
 export default routes;

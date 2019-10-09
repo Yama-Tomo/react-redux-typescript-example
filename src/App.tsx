@@ -51,6 +51,7 @@ const App: React.FC = () => {
   const currentPath = useSelector((state: RootState) => state.router.location.pathname);
   const isHome = currentPath === '/';
 
+
   return (
     <StylesProvider injectFirst>
       <MuiThemeProvider theme={isHome ? Themes.dark : Themes.main}>
@@ -91,6 +92,11 @@ const App: React.FC = () => {
                       currentPath={currentPath}
                       to={routes.search2.routeOpts.path}
                       itemProps={{ primary: 'hooks', secondary: 'autocomplete' }}
+                    />
+                    <NavItem
+                      currentPath={currentPath}
+                      to={routes.secret.routeOpts.path}
+                      itemProps={{ primary: 'secret'}}
                     />
                   </List>
                 </StyledDrawer>
