@@ -1,6 +1,5 @@
 import { combineReducers } from 'redux';
 import { configureStore, getDefaultMiddleware } from 'redux-starter-kit';
-import logger from 'redux-logger';
 import createSagaMiddleware from 'redux-saga';
 import { createBrowserHistory } from 'history';
 import { connectRouter } from 'connected-react-router';
@@ -48,7 +47,7 @@ export default (preloadedState?: unknown) => {
   const store = configureStore({
     reducer: rootReducer,
     preloadedState: preloadedStateResolver(preloadedState),
-    middleware: [...getDefaultMiddleware(), logger, sagaMiddleware],
+    middleware: [...getDefaultMiddleware(), sagaMiddleware],
   });
 
   sagaMiddleware.run(rootSaga);
